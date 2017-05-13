@@ -1,0 +1,221 @@
+<canvas/> 
+<script type="text/javascript">
+const canvasElement = document.querySelector("canvas");
+const CANVAS_WIDTH = window.innerWidth-30;
+const CANVAS_HEIGHT = window.innerHeight-30;
+canvasElement.width = CANVAS_WIDTH;
+canvasElement.height = CANVAS_HEIGHT;
+const canvas = canvasElement.getContext("2d");
+
+let entities = [];
+
+
+function step() {
+	update();
+	draw();
+
+	window.requestAnimationFrame(step);
+}
+
+function update(){
+	entities.forEach(function(entity){
+		entity.update();
+	})
+}
+function draw(){
+	canvas.clearRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+	entities.forEach(function(entity){
+		entity.draw();
+	})
+}
+
+
+
+
+const player = {
+	x:0, y:0, width:100, height:100, color:"#f00", speed:10,
+	update:function(){
+		if (keys[65])
+			this.x -= this.speed;
+		if (keys[87])
+			this.y -= this.speed;
+		if (keys[83])
+			this.y += this.speed;
+		if (keys[68])
+			this.x += this.speed;
+	},
+	draw:function() {
+		canvas.fillStyle = this.color;
+		canvas.fillRect(
+			this.x, this.y,
+			this.width, this.height
+		);
+	} 
+};
+
+function Rect(x,y,width,height,color){
+	return {
+		x: x||0, y: y||0, width: width||100, height: height||100, color: color||"#f00",
+		update:function(){
+
+		},
+		draw: function(){
+			canvas.fillStyle = this.color;
+			canvas.fillRect(
+				this.x, this.y,
+				this.width, this.height
+			);
+		}
+	}
+}
+
+function Drifter(x,y,width,height,color, vx,vy){
+	return {
+		update:function(){
+
+		},
+		draw:function(){
+
+		}
+	}
+}
+
+
+const keys = [255];
+for (let i = 0; i < keys.length; i++) {
+	keys[i]=0;
+};
+
+const mouse = {x:0,y:0};
+
+window.addEventListener("keydown", handleKeyDown);
+window.addEventListener("keyup", handleKeyUp);
+window.addEventListener("mousemove", handleMouseMove);
+
+function handleKeyDown(event) { 
+	const key = event.keyCode; 
+	keys[key]=true;
+}
+function handleKeyUp(event){
+	const key = event.keyCode;
+	keys[key]=false;
+}
+function handleMouseMove(event){
+	mouse.x = event.clientX;
+	mouse.y = event.clientY;
+}
+
+function start(){
+	//You will be adding stuff here
+	//Feel free to delete any of these after you understand how it works
+	entities.push(player);
+
+	const rect1 = Rect();
+	rect1.color = "yellow";
+	entities.push(rect1);
+
+	entities.push(Rect(100,100,200,60,"blue"));
+	entities.push(Rect(300,300));
+	entities.push(Rect(200,null,false,null,"green"));
+
+
+	entities.push(Drifter());
+	entities.push(Drifter(400,400,60,70,"black", 4,4));
+
+
+	//this starts the loop don't remove this
+	window.requestAnimationFrame(step);
+}
+start();
+
+/*
+=============================================================================
+							ASA ASSIGNMENT
+	Preliminaries:
+
+	Look at the Rect and Drifter functions to understand how we are going to be doing
+	object-oriented programming for this assignment
+
+	The Start of the program happens at the start function (above^)
+	It creates instances of our class and pushes them to an entities list
+
+	window.requestAnimationFrame(step);
+		This line starts the looping in the step function (found at the beginning of the program)
+		It will automatically go through every entity in entities
+		to call its update function and its draw function
+
+	All you have to worry about is making the classes and pushing instances of them to entities in start
+	I have shown some examples of how to instantiate objects of the classes in different ways
+	Notice how the use of parameters is very flexible,
+	you may want to look into the code behind this in Rect that uses the || (OR operator)
+		Figure out what the following code does and how it is used
+				(remember you can use chrome's console as a shell):
+			var a = true||false;
+			var b = 3||4;
+			var c = false||10;
+			var d; //this is undefined
+			var e = d||10; //what does this do?
+			var f = d||0;
+
+
+	ASIGNMENT:
+
+	You can do this however you want as long as it works. You don't know how to use inheritence with this style,
+		so for now simlar functionalities can just be copied from the code of other classes
+			You can just copy the code for Rect to begin the code for Drifter for now
+	
+	LEVEL1:
+
+	Finish the Drifter class to behave like a Rect but with a velocity in x and y (vx, vy)
+		Every frame (update) 
+			it's x will increase by vx
+			it's y will increase by vy
+		Make sure that these attributes can be set through the parameters
+		Make sure that it works when no parameters are given (use whatever default values you want)
+
+	Create a Looper class that will behave exactly like Drifter but 
+		when it drifts out of bounds (off screen) it will loop to the other side
+
+	Add some Looper objects in start
+	
+
+
+
+
+	LEVEL2:
+
+	Create a MouseMove class that will move towards the mouse
+		You can access the mouse coordinates using the mouse variable I have set up
+		You can do this in any way as long as the object moves closer to the mouse and will eventually reach it
+
+	Create a MousePointer class
+		its position will always be the midpoint between the mouse position and the center of the screen
+
+	Create a MousePath class that will move towards the mouse but 
+		it will move directly towards it
+		with a constant set speed
+	
+
+
+
+
+	
+	LEVEL3:
+
+	Create a LinePath class
+		it will move back in forth between two points in space that you can set
+
+	Create a CirlcePath class 
+		it will move in a circle a set distance away from a center point
+		You may need to recall the unit circle and its relation to trig
+		you may need to look up certain Math functions for js
+
+	Create a SquarePath class
+		it will move in a square path of a set size from a center point
+
+	
+
+
+*/
+
+</script>
